@@ -1,46 +1,57 @@
-# Walkthrough: Module PM-01 (Authentication & User Management)
+# Module
+PM-01 User Authentication
 
-The core authentication logic and UI have been successfully implemented according to the PM-01 specifications. 
+## Objective
+To provide a secure, scalable, and premium authentication flow for the Project Millionaire platform, allowing new users to register, login, recover their passwords, and manage their profiles.
 
-## Architectural Foundation
+## Files Changed
+- `backend/src/controllers/auth.controller.ts`
+- `backend/src/controllers/user.controller.ts`
+- `backend/src/middlewares/auth.middleware.ts`
+- `backend/prisma/schema.prisma`
+- `frontend/src/pages/Login.tsx`
+- `frontend/src/pages/Register.tsx`
+- `frontend/src/pages/ForgotPassword.tsx`
+- `frontend/src/pages/Profile.tsx`
+- `frontend/src/context/AuthContext.tsx`
+- `frontend/src/services/api.ts`
 
-- **Frontend**: Built using React with TypeScript, Vite for lightning-fast bundling, and styled exclusively with Tailwind CSS.
-- **Backend**: Robust Node.js API with Express, TypeScript, and Prisma ORM.
-- **Database**: PostgreSQL setup included via Docker (`docker-compose.yml`).
-- **Security**: Passwords hashed with `bcrypt`, authentication secured via `jsonwebtoken`, and login rate-limiting enabled via `express-rate-limit`.
+## Architecture Changes
+- Set up a Node.js Express backend with Prisma ORM.
+- Set up a Vite React + TypeScript frontend with Tailwind CSS.
+- Implemented a Context API-based state management system for authentication on the frontend.
+- Designed a scalable routing structure with PrivateRoute guards.
 
-## Design & Aesthetics
+## Database Changes
+- Initialized PostgreSQL database via Docker.
+- Created `User` table with fields for UUID, full_name, email, password_hash, country, currency, timezone, and timestamps.
+- Wrote a Prisma seed script (`seed.ts`) to automatically generate a default admin user.
 
-The frontend design features a premium, rich aesthetic that aims to impress:
-- **Glassmorphism**: Login and Registration cards utilize backdrop filters (`backdrop-blur`) and semi-transparent backgrounds to create a sleek glass effect.
-- **Micro-animations**: Smooth hover transitions, fade-in loading animations, and subtle slow-pulsing background decorations.
-- **Color Palette**: A curated dark mode palette focusing on deep slate backgrounds contrasted with vibrant brand accents (Teal/Emerald).
-- **Icons**: Professional iconography integrated via `lucide-react`.
+## API Changes
+- `POST /api/auth/register`: Registers a new user.
+- `POST /api/auth/login`: Authenticates users and returns a JWT.
+- `POST /api/auth/forgot-password`: Mocks sending a password reset email.
+- `POST /api/auth/reset-password`: Resets a user's password using a valid token.
+- `GET /api/user/profile`: Fetches the currently authenticated user's profile.
+- `PUT /api/user/profile`: Updates the user's profile settings (country, currency, timezone, etc.).
 
-## User Flows Implemented
+## Security Changes
+- Passwords are never stored in plaintext (using `bcrypt` with 10 salt rounds).
+- Authentication is handled securely via JWT (JSON Web Tokens).
+- Implemented `express-rate-limit` on the login route (max 10 requests per 15 minutes per IP) to prevent brute force attacks.
+- Prevented email enumeration in the forgot password endpoint by always returning a generic success message.
 
-### 1. Registration (`/register`)
-- Captures Full Name, Email, Password, and Confirm Password (with real-time validation via `react-hook-form`).
-- Optional fields supported: Country, Currency, and Time Zone.
-- Passwords matched locally before submitting to the server.
+## Test Results
+- ✅ User Registration succeeds and auto-logs in.
+- ✅ Login validates credentials against hashed entries.
+- ✅ Profile data fetches correctly when authenticated.
+- ✅ Editing and saving profile details successfully persists to PostgreSQL.
+- ✅ Mocked forgot password flow successfully outputs the token in the backend console.
 
-### 2. Login (`/login`)
-- Clean, focused interface for returning users.
-- Validates credentials against the hashed PostgreSQL entries.
-- Emits a JWT token upon success, directing the user seamlessly to their Profile.
+## Known Issues
+- Forgot Password flow currently logs the link to the console instead of sending an actual email (Mock mode as per requirements).
+- Reset Password UI screen has not been fully designed yet since the token is currently just logged in the backend.
 
-### 3. Forgot Password (`/forgot-password`)
-- Currently utilizes a **mocked** email service for local development.
-- When a valid email is submitted, the backend console logs a simulated email payload containing the reset link and token. 
-- The UI handles errors and success states cleanly, prioritizing security by not confirming if an email exists on the system to prevent enumeration attacks.
-
-### 4. User Profile (`/profile`)
-- Displays the user's active status and email.
-- Allows modifications to Full Name, Country, Currency, and Time Zone.
-- Integrates with the backend `PUT /api/user/profile` endpoint, updating the React Auth Context instantly on save.
-
-## Designer Review Request
-
-> [!TIP]
-> **For the Design Team**: 
-> Please review the glassmorphism effects and color palettes used in the `tailwind.config.js` and `index.css`. The forms have been built using flexible Tailwind utility classes (`input-field`, `btn-primary`, `glass-card`), which makes adjusting padding, border-radii, and hover states incredibly easy if you wish to tune the micro-interactions further.
+## Questions for ChatGPT
+- Should we integrate Nodemailer or Resend for the Forgot Password flow in the next module, or keep it mocked for now?
+- When PM-02 Dashboard begins, should the dashboard be the default landing page upon login instead of the profile page?
