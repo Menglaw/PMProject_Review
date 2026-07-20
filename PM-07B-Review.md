@@ -5,6 +5,8 @@ PM-07B Gold & Macro AI Intelligence Engine
 Transform the existing Gold Intelligence module into a professional AI-powered Gold & Macro Intelligence Engine that combines live gold data, macro economics, technical analysis, central bank activity, and ETF flows into a single unified AI model.
 
 ## Files Changed
+- ackend/src/controllers/technicalAnalysis.controller.ts (Complete Live OHLCV conversion using technicalindicators)
+- rontend/src/pages/dashboard/TechnicalAnalysisPage.tsx (Removed preview mock banner)
 - ackend/src/controllers/stockIntelligence.controller.ts (Fixed yahooFinance array iteration bug)
 - `backend/prisma/schema.prisma` (Rebuilt GoldIntelligence with advanced JSON fields)
 - `backend/src/controllers/goldIntelligence.controller.ts` (Complete AI macro rewrite and caching)
@@ -15,6 +17,7 @@ Transform the existing Gold Intelligence module into a professional AI-powered G
 - `frontend/src/App.tsx` (Fixed default exports)
 
 ## Architecture Changes
+- Removed deterministic/mock scores from Technical Analysis engine. Replaced completely with mathematical live OHLCV data calculations via 	echnicalindicators.
 - Expanded the `AIEngine` usage to ingest multiple live ticker streams (Gold, DXY, TNX, Oil) simultaneously to create a synthesized macroeconomic context prompt for Gemini.
 
 ## Database Changes
