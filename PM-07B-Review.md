@@ -5,6 +5,7 @@ PM-07B Gold & Macro AI Intelligence Engine
 Transform the existing Gold Intelligence module into a professional AI-powered Gold & Macro Intelligence Engine that combines live gold data, macro economics, technical analysis, central bank activity, and ETF flows into a single unified AI model.
 
 ## Files Changed
+- ackend/src/controllers/stockIntelligence.controller.ts (Fixed yahooFinance array iteration bug)
 - `backend/prisma/schema.prisma` (Rebuilt GoldIntelligence with advanced JSON fields)
 - `backend/src/controllers/goldIntelligence.controller.ts` (Complete AI macro rewrite and caching)
 - `backend/src/routes/goldIntelligence.routes.ts` (Fixed route exports)
@@ -30,6 +31,7 @@ Transform the existing Gold Intelligence module into a professional AI-powered G
 - Cache correctly prevents AI rate limit exhaustion by relying on macro-hashing and a 1% gold price delta threshold.
 
 ## Known Issues
+- Fixed backend crash caused by yahooFinance2 search returning an object instead of array (PM-07B FINAL BUG FIX).
 - Currently relies on Yahoo Finance proxies (`DX-Y.NYB`, `^TNX`) for macro data. If Yahoo Finance rate-limits these queries, the AI will fall back to safe default analysis without crashing.
 
 ## Questions for ChatGPT
